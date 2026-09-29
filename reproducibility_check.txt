@@ -1,0 +1,55 @@
+Reproduction check
+{
+  "seed": 20260929,
+  "leone_shared_rate_means": [
+    0.135,
+    0.18
+  ],
+  "leone_arm_specific_rate_means": [
+    0.024500000000000022,
+    0.2905
+  ],
+  "leone_summary_shared_rate_interval": [
+    -0.06638278966187097,
+    0.4049170094449258
+  ],
+  "endpoint_prevalence_example": {
+    "naive": 0.26,
+    "correct": 0.41818181818181815
+  },
+  "net_gain_bounds_without_count": [
+    -1.0,
+    0.29411764705882343
+  ],
+  "net_gain_bounds_with_count_1.05_1.15": [
+    0.0500000000000001,
+    0.1499999999999999
+  ],
+  "productive_structural_bounds": [
+    0.08039521429944263,
+    0.09399690014502315
+  ],
+  "public_uninformative_signature_bounds": [
+    0.0,
+    1.0
+  ],
+  "scope": "AJP version is a literature-based Perspective with no unpublished simulation results; full manuscript includes computational design analyses but claims no biological validation."
+}
+
+Tests
+............                                                             [100%]
+12 passed in 0.67s
+
+AJP word count
+File: AJP_Perspective/AJP_Heart_Perspective.tex
+Encoding: ascii
+Sum count: 1100
+Words in text: 1077
+Words in headers: 10
+Words outside text (captions, etc.): 0
+Number of headers: 2
+Number of floats/tables/figures: 0
+Number of math inlines: 11
+Number of math displayed: 2
+Subcounts:
+  text+headers+captions (#headers/#floats/#inlines/#displayed)

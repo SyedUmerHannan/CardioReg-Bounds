@@ -1,0 +1,9 @@
+Reference environment used for the reproducibility check:
+Python 3.13.5
+numpy 2.3.5
+pandas 2.2.3
+scipy 1.17.0
+matplotlib 3.10.8
+pytest 9.0.2
+
+See requirements.txt for portable minimum-version requirements.
