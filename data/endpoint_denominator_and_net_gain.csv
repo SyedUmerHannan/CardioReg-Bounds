@@ -1,0 +1,7 @@
+quantity,point_value,lower,upper
+naive_baseline_weighted_prevalence,0.26,,
+correct_endpoint_cell_prevalence,0.41818181818181815,,
+net_gain_truth,0.1,,
+net_gain_from_endpoint_prevalences_only,,-1.0,0.29411764705882343
+net_gain_plus_cell_count_ratio_1.05_to_1.15,,0.0500000000000001,0.1499999999999999
+net_gain_plus_exact_cell_count_ratio_1.10,,0.1000000000000002,0.1000000000000002

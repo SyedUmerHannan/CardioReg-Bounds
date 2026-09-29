@@ -1,0 +1,7 @@
+condition,furrow_category,mean_fraction,sd_fraction,n_independent_experiments
+FBS,two_sided,0.25,0.13,5
+FBS,one_sided,0.33,0.14,5
+FBS,no_sided,0.42,0.09,5
+FGF1_p38i,two_sided,0.43,0.1,5
+FGF1_p38i,one_sided,0.26,0.13,5
+FGF1_p38i,no_sided,0.31,0.05,5

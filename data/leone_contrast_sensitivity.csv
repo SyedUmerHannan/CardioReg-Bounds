@@ -1,0 +1,4 @@
+analysis,lower,upper,interpretation
+published_means_shared_rates,0.135,0.18,Sensitivity set conditional on one shared morphology-to-outcome rate vector; not a confidence interval.
+published_means_arm_specific_rates,0.024500000000000022,0.2905,Same rate boxes allowed to differ between treatment arms.
+summary_difference_intervals_shared_rates,-0.06638278966187097,0.4049170094449258,Uses all three published composition SDs and simultaneous Welch intervals for T-C differences; assumes independent arms because raw covariance/pairing is unavailable.
