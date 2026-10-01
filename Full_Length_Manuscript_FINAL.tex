@@ -1,0 +1,253 @@
+\pdfinfoomitdate=1
+\pdfsuppressptexinfo=15
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,microtype,hyperref,array,longtable}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{enumitem}
+\hypersetup{hidelinks}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\title{Target-Specific Partial Identification for Cardiomyocyte Regeneration Assays:\\Framework, Sensitivity Analyses, and Design Implications}
+\author{Syed Umer Hannan\\Batterjee Medical College, Jeddah, Saudi Arabia}
+\date{}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Cardiomyocyte-regeneration studies combine DNA-synthesis, mitotic, cytokinesis, nucleation, lineage, survival, and cell-count measurements that generally do not identify the same biological quantity. This manuscript develops a target-first partial-identification framework in which the cohort, horizon, latent histories, assay schedule, denominator, and estimand are declared before observations are combined. For baseline-unit assays, interval-valued response probabilities and observation intervals lead to linear-programming bounds on a target. For endpoint-cell prevalences, death and division alter the denominator; descendant-weighted constraints remain linear after cross-multiplication, but net gain is not identified without an independent cell-count or survival constraint. A published cleavage-furrow dataset illustrates treatment-contrast sensitivity. At the published morphology means, the productive-division contrast is 13.5--18.0 percentage points if morphology-to-outcome rates are shared across arms, but 2.45--29.05 points if the same rate boxes may differ by arm. Using all three published composition standard deviations and simultaneous Welch intervals for arm differences gives a wider shared-rate sensitivity set of -6.64 to 40.49 points; the calculation assumes independent arms because raw covariance is unavailable. Synthetic design analyses deliberately use seven histories and four assays. A combined productive-division target can be narrowly bounded at the population level while one-division, repeated-division, and death components remain weakly resolved; with completely unsupported [0,1] signatures the productive target becomes [0,1]. Cluster-level simulations show that small biological-replicate counts and calibration uncertainty dominate structural identification, and deliberately misspecified signatures eventually reduce coverage as precision rises. No biological validation is claimed. The framework is intended as a transparent grammar for stating what an assay panel can and cannot support, and as a guide to prospective calibration and validation.
+\end{abstract}
+
+\section{Introduction}
+Claims of cardiomyocyte proliferation are unusually sensitive to the distinction between an assay event and a regenerative outcome. DNA synthesis can represent productive cycling, DNA repair, or endoreplication; mitosis can end in binucleation; cytokinesis-associated proteins can be transient or mislocalized; and even a bona fide daughter-cell event does not by itself establish net myocardial cell gain if death and attrition are substantial. These problems have been emphasized repeatedly in cardiac-regeneration methodology and review literature \citep{Leone2015,Auchampach2022,Gan2020,Kirillova2021}. The central unresolved question is quantitative: given several imperfect and temporally heterogeneous assays, what can they jointly identify about a prespecified regenerative target?
+
+Partial identification provides a natural language for such problems. Rather than force a single point estimate through an underdetermined observation model, one reports all target values compatible with the declared assumptions and data \citep{Manski2003,ImbensManski2004}. Similar logic appears in latent-class models for imperfect diagnostic tests \citep{Collins2014}. The mathematics is standard. The proposed contribution is a cardiomyocyte-specific analysis grammar that keeps biological histories, assay schedules, denominators, and treatment-specific calibration explicit.
+
+The framework is motivated by adult injured myocardium but is not calibrated universally to that population. Neonatal cardiomyocytes and human induced-pluripotent-stem-cell-derived cardiomyocytes can be useful systems for mechanistic calibration, yet response probabilities should not be transported across developmental stage, species, injury state, anatomical region, or treatment arm without evidence. The full manuscript therefore distinguishes structural mathematics from biological calibration, and it treats its numerical analyses as worked examples or synthetic design analyses rather than validation.
+
+This perspective also complements, rather than replaces, quantitative turnover approaches. Carbon-14 birth dating infers long-term human cardiomyocyte renewal from atmospheric labeling history \citep{Bergmann2009}, while multi-isotope imaging mass spectrometry has been used to study mammalian cardiomyocyte renewal after injury \citep{Senyo2013}. Those methods use different observation operators and horizons, but they illustrate the same principle: an inferential claim is inseparable from how cells are labeled, counted, retained, and sampled.
+
+\section{Target-first model}
+\subsection{Cohort, horizon, histories, and targets}
+Fix a baseline time $t_0$, horizon $H$, anatomical sampling frame, and baseline cardiomyocyte cohort. Let $x_j$ be the fraction of baseline cells following mutually exclusive history $j$ over $[t_0,H]$:
+\begin{equation}
+x_j\ge0,\qquad \sum_{j=1}^Jx_j=1.
+\end{equation}
+The history partition should be rich enough for the scientific question. A practical partition may distinguish no cycle entry, DNA synthesis without mitosis, endoreplication, multinucleation, one productive division, repeated productive division, and death/loss. Baseline nucleation or ploidy can be handled by further stratifying histories.
+
+A target is a functional of the history distribution. For a linear target,
+\begin{equation}
+\theta=c^Tx.
+\end{equation}
+For example, the fraction of baseline cardiomyocytes completing at least one productive division assigns $c_j=1$ to one-division and repeated-division histories. A target such as ``exactly one division'' has a different vector. Target-specific identification is therefore possible even when the full history vector is not identified.
+
+Net gain requires descendant counts rather than a state label. Let $d_j(H)$ be the number of viable descendants at $H$ contributed by one baseline cardiomyocyte in history $j$. Then, in a closed sampling frame,
+\begin{equation}
+R_H\equiv \frac{N(H)}{N_0}=\sum_jd_jx_j,\qquad
+G_H\equiv\frac{N(H)-N_0}{N_0}=\sum_j(d_j-1)x_j.
+\label{eq:gain}
+\end{equation}
+Death has $d_j=0$, survival without productive division has $d_j=1$, one durable division has $d_j=2$, and repeated division requires larger descendant counts or a clone-size partition.
+
+\subsection{Baseline-unit assay model}
+For assay $a$, define a protocol-specific response probability
+\begin{equation}
+s_{aj}=P(O_a=1\mid j,\text{ assay schedule}).
+\end{equation}
+The schedule includes fixation time, labeling window, anatomical region, localization rule, retention, censoring, and any image-analysis criterion. If prevalence is defined per baseline unit,
+\begin{equation}
+p_a=\sum_js_{aj}x_j.
+\label{eq:baseline}
+\end{equation}
+With observation intervals $p_a\in[\ell_a,u_a]$, target bounds are
+\begin{equation}
+\underline\theta=\min c^Tx,\qquad \overline\theta=\max c^Tx
+\label{eq:lp}
+\end{equation}
+subject to $x\ge0$, $\mathbf1^Tx=1$, and the assay constraints. If signatures are known only within $S^L_{aj}\le s_{aj}\le S^U_{aj}$ and entries may vary independently within each row, a sufficient and row-wise sharp compatibility relaxation is
+\begin{equation}
+S^L_{a\cdot}x\le u_a,\qquad S^U_{a\cdot}x\ge\ell_a.
+\label{eq:intervalS}
+\end{equation}
+Shared calibration parameters require a joint model rather than independent boxes.
+
+\subsection{Endpoint-cell prevalence under death and division}
+Assays performed on cells present at $H$ generally have a different denominator. If $s_{aj}$ denotes positivity among descendants from history $j$, then
+\begin{equation}
+p_a=\frac{\sum_jx_jd_js_{aj}}{\sum_jx_jd_j}.
+\label{eq:endpoint}
+\end{equation}
+For $p_a\in[\ell_a,u_a]$, cross-multiplication gives linear constraints
+\begin{align}
+\sum_jd_j(s_{aj}-u_a)x_j&\le0,\\
+\sum_jd_j(\ell_a-s_{aj})x_j&\le0.
+\end{align}
+The same construction works with interval signatures by using $S^L$ in the upper-compatibility inequality and $S^U$ in the lower-compatibility inequality.
+
+Equation~\eqref{eq:endpoint} does \emph{not} mean endpoint prevalence identifies net gain. If $R_H=N(H)/N_0$ is unobserved, large amounts of death can be hidden because prevalence conditions on surviving descendants. The LP implementation therefore allows an explicit descendant-ratio constraint $R_H\in[L_R,U_R]$. Without it, the optimization is interpreted over the closure of the positive-denominator feasible set rather than stabilized by an arbitrary numerical epsilon.
+
+\subsection{Transient snapshots and cumulative labels}
+Assay timing can be represented more generally by an observation operator. If events of type $j$ occur with intensity $\lambda_j(t)$ and transient assay $a$ is visible according to kernel $K_{aj}(u)$ after an event, then
+\begin{equation}
+q_a(t)=\sum_j\int_0^\infty \lambda_j(t-u)K_{aj}(u)\,du.
+\label{eq:kernel}
+\end{equation}
+Under stationarity and suitable integrability, integrated occupancy is related to event burden through kernel mass, an incidence--occupancy--duration identity analogous to Little's law \citep{Little1961}. A fixed snapshot, however, does not identify cumulative incidence unless timing and visibility are constrained. Snapshot sampling can also be length biased because long-visible states are more likely to be observed \citep{Vardi1982}.
+
+Permanent or retained lineage labels require a different operator. At finite horizon $H$,
+\begin{equation}
+L_a(H)=\sum_j\int_{t_0}^{H}\lambda_j(s)R_{aj}(H-s)\,ds,
+\end{equation}
+where $R_{aj}$ describes label retention or descendant visibility. If label acquisition is irreversible and retention is complete, the operator can approximate cumulative incidence. Attrition, incomplete recombination, repeated events, and clone expansion break that simplification. Transient and cumulative assays should therefore not be merged merely because both correlate with cell-cycle activity.
+
+\section{Treatment contrasts and calibration invariance}
+For treatment group $g$, the response matrix is more appropriately written $S^{(g)}$. A transient marker can change because treatment alters event duration or timing even if the terminal biological history is unchanged. Equality $S^{(T)}=S^{(C)}$ is thus a biological assumption.
+
+A common special case arises when an observable category $k$ has a conditional outcome rate $r_k$. If category proportions are $y_{gk}$, the productive outcome fraction within the relevant parent population is
+\begin{equation}
+\theta_g=\sum_kr_{gk}y_{gk}.
+\end{equation}
+If $r_{Tk}=r_{Ck}=r_k$ is justified, the contrast is
+\begin{equation}
+\Delta=\theta_T-\theta_C=\sum_kr_k(y_{Tk}-y_{Ck}).
+\label{eq:contrast}
+\end{equation}
+The contrast should be bounded directly with shared $r_k$ rather than obtained by separately maximizing treatment and control marginals. If rates may differ by arm, the wider arm-specific sensitivity set should be reported.
+
+\section{Published cleavage-furrow example}
+Leone, Musa, and Engel used live imaging of P3 rat cardiomyocytes to distinguish two-sided, one-sided, and absent cleavage-furrow ingression and then determined whether cells formed two mononucleated daughters or became binucleated \citep{Leone2018}. The article's statistical-analysis section states that data are mean $\pm$ SD from independent experiments. Figure~1D reports, for FBS, $25\pm13\%$ two-sided, $33\pm14\%$ one-sided, and $42\pm9\%$ absent furrow ingression; under FGF1 plus p38 inhibition, the corresponding values are $43\pm10\%$, $26\pm13\%$, and $31\pm5\%$, from five independent experiments. The Results state that more than 90\% of P3 cardiomyocytes with two-sided ingression divided into two mononucleated daughters, while more than 85\% of cells with one-sided or absent ingression failed cytokinesis \citep{Leone2018}.
+
+Because the outcome statements are inequalities without reported category-specific denominators, they are used here as sensitivity ranges rather than statistical confidence intervals:
+\begin{equation}
+r_{2}\in[0.90,1],\qquad r_1,r_0\in[0,0.15].
+\end{equation}
+At the published morphology means, shared rates across arms give
+\begin{equation}
+\Delta\in[0.135,0.180].
+\end{equation}
+This is a deterministic sensitivity set, not a confidence interval. If each arm is allowed its own rate vector within the same boxes, the mean-level set widens to
+\begin{equation}
+\Delta\in[0.0245,0.2905].
+\end{equation}
+Thus the positive mean-level conclusion depends on whether morphology-to-outcome calibration is shared across treatment arms.
+
+Sampling uncertainty should be applied to the contrast rather than inferred from overlap of marginal arm intervals. Raw experiment-level values and pairing/covariance are not available in the article text. As a reproducible summary-level approximation, the package forms simultaneous 95\% Welch intervals for each of the three treatment-minus-control morphology differences using the reported SDs and $n=5$, with Bonferroni control across the three differences, while enforcing that the three differences sum to zero. Combining these difference intervals with shared rate boxes yields
+\begin{equation}
+\Delta\in[-0.0664,0.4049].
+\end{equation}
+This interval assumes independent arms and is not claimed to be the unique or optimal inferential construction. If the five experiments were paired, raw covariance could materially change it. Its purpose is narrower: it avoids the parameterization artifact produced by discarding one composition coordinate and makes clear that the summary data do not support a precise shared-rate contrast after conservative sampling uncertainty is admitted.
+
+The estimand is also limited. It is a productive-division fraction among the mitotic cells represented by the furrow categories, not a fraction of the baseline cardiomyocyte cohort and not net new cardiomyocytes. A therapy could alter cell-cycle entry and the per-mitosis completion fraction differently. The example is therefore a calibration/contrast illustration, not a validation of the full multi-assay framework. The same study provides the morphology-to-outcome relationship used in the calculation.
+
+\begin{table}[ht]
+\centering
+\caption{Leone/Musa/Engel contrast sensitivity analyses.}
+\begin{tabular}{p{0.43\textwidth}cc}
+\toprule
+Analysis & Lower & Upper\\
+\midrule
+Published means, shared outcome-rate vector & 0.135 & 0.180\\
+Published means, arm-specific rate vectors & 0.0245 & 0.2905\\
+Simultaneous summary difference intervals, shared rates & -0.0664 & 0.4049\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Endpoint prevalence cannot identify net gain without counts}
+Consider three baseline histories: survive without division, complete one durable division, and die, with true fractions $(0.60,0.25,0.15)$ and descendant counts $d=(1,2,0)$. Let one endpoint-cell assay have response probabilities $(0.10,0.80,0)$. A baseline-weighted calculation gives 0.26, while the correct prevalence among endpoint cells is
+\begin{equation}
+\frac{0.60(1)(0.10)+0.25(2)(0.80)}{0.60(1)+0.25(2)}=0.418.
+\end{equation}
+The true descendant ratio is $R_H=1.10$, so true net gain is 0.10.
+
+Using two exact endpoint prevalences from the illustrative system but no count constraint, the LP bound for net gain is $[-1.000,0.294]$. The lower endpoint is an infimum corresponding to the closure as surviving mass approaches zero; it makes explicit that prevalence among survivors cannot rule out extensive death. Adding a cell-count constraint $R_H\in[1.05,1.15]$ immediately narrows net gain to $[0.05,0.15]$; fixing $R_H=1.10$ identifies $G_H=0.10$. Thus the endpoint-denominator extension is useful only when paired with the population-flow information required by the target.
+
+\section{Synthetic design analyses}
+The simulations in this section are computational stress tests, not biological calibration. The hypothetical system contains seven histories---no cycle, DNA-only, endoreplication, multinucleation, one division, repeated division, and death---and four baseline-unit assays. With the simplex constraint, the augmented observation system has rank five, leaving two unidentified directions.
+
+At exact population assay prevalences, the combined target ``one or repeated productive division'' has a narrow identified set, 0.0804--0.0940 around a true value 0.09. This target is deliberately chosen to illustrate target-specific identification. Other targets in the same system are weakly resolved: one division alone is 0--0.0940, repeated division alone 0--0.0840, and death 0--0.3871. The contrast is important: an underdetermined history vector can support one narrow target while leaving nearby targets broad.
+
+The biological calibration remains decisive. If every entry of the signature matrix is left at the unsupported range $[0,1]$, as in the public-calibration audit for a generic EdU/pH3/Aurora-B/mononucleation panel, the productive target is exactly $[0,1]$. Partial identification does not create information that the calibration does not contain.
+
+\begin{table}[ht]
+\centering
+\caption{Population-level structural bounds in the seven-history/four-assay synthetic system.}
+\begin{tabular}{lccc}
+\toprule
+Target & Truth & Lower & Upper\\
+\midrule
+Any productive division & 0.090 & 0.0804 & 0.0940\\
+Exactly one division & 0.070 & 0 & 0.0940\\
+Repeated division & 0.020 & 0 & 0.0840\\
+Death & 0.100 & 0 & 0.3871\\
+Any productive division, signatures all $[0,1]$ & 0.090 & 0 & 1\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Finite-sample simulations use biological units rather than pooled cells. The same units contribute all four assays; each unit has its own history mixture drawn from a Dirichlet distribution, and each assay scores an unequal 120--800 cells per unit. Simultaneous Bonferroni $t$ intervals are calculated across biological-unit proportions. Four calibration scenarios are reported: exact signatures, hypothetical $\pm0.05$ and $\pm0.15$ signature boxes, and a deliberately misspecified narrow box. A simplex-constrained least-squares point fit using the same midpoint signatures is included as a non-set-valued comparator.
+
+In the well-specified scenarios, coverage of the true productive target was 1.00 in all simulated configurations, reflecting deliberately conservative intervals rather than demonstrated calibration. At $n=5$ units with exact signatures, the median target set was approximately $[0,0.192]$; at $n=12$ it was approximately $[0,0.152]$; at $n=30$ it was approximately $[0.031,0.137]$. The structural population set is much narrower, so sampling variability rather than algebraic nonidentification dominates at small $n$. At $n=3$, roughly half of assay-level $t$ intervals crossed 0 or 1 before clipping; by $n\ge8$, clipping disappeared in these simulations.
+
+The deliberately misspecified calibration is constructed to become detectably wrong as precision increases. Its coverage remained 1.00 at $n=5$, was 0.98 at $n=8$, 0.89 at $n=20$, and 0.62 at $n=30$, with 1\% infeasible fits at $n=30$. This behavior is desirable as a stress test: low replicate counts can hide calibration error because the target set is broad, whereas greater precision exposes it. Coverage alone is therefore not an informativeness criterion; lower and upper bounds, width, infeasibility, and calibration assumptions must all be reported.
+
+The constrained least-squares comparator uses the same signature midpoint and assay means but forces a point solution in an underdetermined model. Its median absolute target error was small under exact signatures in this particular simulation (about 0.01--0.02 for $n\ge5$), which shows why point estimators can look attractive even when multiple history vectors fit essentially equally well. The LP answers a different question: what target values are supported without selecting one arbitrary compatible history mixture?
+
+\section{Treatment-dependent signatures: what the finite-sample stress test actually shows}
+A separate null-contrast experiment gives control and treatment the same latent history distribution but changes the treatment visibility of productive histories in the three transient assay rows. An analysis that incorrectly reuses the control matrix can become incompatible at the exact population level as the shift grows. With realistic finite-sample intervals, however, the simulated treatment-contrast sets were much wider: at 5--30 biological units per arm the false-effect fraction remained zero for visibility shifts up to 0.20 in the configurations studied, while median contrast widths were approximately 0.2--0.4.
+
+This result tempers rather than dramatizes the invariance warning. Treatment-specific assay kinetics can bias interpretation in principle, but at the small replicate counts common in cardiomyocyte studies, sampling uncertainty may dominate and hide that bias. Signature invariance should therefore be declared and stress-tested, not treated as a demonstrated source of false positives in every experiment.
+
+\section{Inference, coverage, and what is not implemented}
+The finite-sample layer used here is intentionally simple: biological-unit proportions are summarized by simultaneous Bonferroni $t$ intervals and then projected through the feasible set. This constructs a conservative confidence region for the observation vector and, under correct calibration assumptions, a conservative set for the target. It is not the Imbens--Manski confidence interval for a partially identified scalar parameter \citep{ImbensManski2004}; nor does it exploit covariance among assays measured in the same animals. The distinction between coverage of the identified set and coverage of a point-valued biological truth should therefore be kept explicit.
+
+More efficient inference could use multivariate biological-unit resampling, cluster bootstrap or subsampling, profile methods, or partial-identification procedures that account directly for estimated nuisance parameters. Those developments matter if the framework is to become a formal inferential method rather than a conservative analysis grammar.
+
+\section{Relation to quantitative cardiomyocyte turnover models}
+Long-horizon turnover models pose different but related inverse problems. Atmospheric $^{14}$C birth dating uses a historical labeling curve and nuclear/cell-age models to infer human cardiomyocyte renewal \citep{Bergmann2009}. Multi-isotope imaging mass spectrometry combines stable-isotope incorporation with cardiomyocyte identity to localize renewal and injury responses \citep{Senyo2013}. Such methods are not reducible to the simple assay-response matrix used here, but they reinforce two design principles: the time-varying label process must be part of the model, and the target population and denominator must be explicit.
+
+A mature CardioReg analysis would therefore treat the LP as one component in a larger measurement model, not as a replacement for lineage tracing, isotope methods, direct cell counts, or longitudinal imaging.
+
+\section{Practical decision rules}
+The analyses above suggest several operational rules.
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Declare the target before the panel.} ``Proliferation'' is too broad. Specify baseline-cell productive cytokinesis, durable descendants, net gain, clone size, or another target.
+\item \textbf{Match the denominator.} Baseline-unit, endpoint-cell, field-level, and cumulative lineage readouts cannot be pooled without an explicit mapping.
+\item \textbf{Include failure histories.} Endoreplication, multinucleation, death, and repeated division should be represented when they are plausible alternatives.
+\item \textbf{Treat calibration as local.} $S$ depends on assay, schedule, population, and treatment. Shared calibration across arms is a restriction to be defended or relaxed.
+\item \textbf{Report unresolved targets next to resolved ones.} A narrow bound for one combined target can coexist with complete nonidentification of its components.
+\item \textbf{Do not hide vacuity.} If supported signature ranges are $[0,1]$, the correct result may be $[0,1]$.
+\item \textbf{Use biological units for uncertainty.} Thousands of cells do not replace three animals.
+\item \textbf{For net gain, measure counts.} Endpoint composition without $N(H)/N_0$ or a survival/count constraint cannot identify gain.
+\item \textbf{Separate diagnostic infeasibility from validation.} An empty set identifies model--data incompatibility; a nonempty set does not validate the model.
+\item \textbf{Validate prospectively.} Freeze signatures and analysis rules before opening an independent lineage-resolved or cell-count endpoint.
+\end{enumerate}
+
+\section{Limitations and prospective validation}
+No public dataset examined for this project supplied an independently calibrated multi-assay signature matrix together with a genuinely withheld adult-heart regenerative endpoint. The public audit of a generic EdU/pH3/Aurora-B/mononucleation panel therefore leaves unsupported conditional response probabilities at $[0,1]$. This is a limitation of the current evidence, not a reason to guess narrower numbers.
+
+The published cleavage-furrow example is closer to the target but remains same-study calibration and uses summary statistics. The synthetic signature matrices are hypothetical. The cluster simulations are software/design stress tests, not biological evidence. The descendant-denominator example is algebraic. Consequently, this work should not be interpreted as a validated adult-heart regeneration estimator.
+
+A decisive prospective study would use an independent calibration cohort, a prespecified target and history partition, multiple biological challenge units, animal/batch-level inference, treatment-specific calibration or a prespecified invariance sensitivity, and an outcome that is hidden until the target interval is locked. A direct live-lineage cytokinesis endpoint is particularly attractive in a controlled cardiomyocyte system; adult in-vivo validation would additionally require a commensurate lineage denominator and direct cardiomyocyte count or survival measurement.
+
+\section{Conclusion}
+Cardiomyocyte regeneration assays should be interpreted as observation operators on latent cell histories, not as interchangeable measures of proliferation. A target-first partial-identification framework makes that principle quantitative. The same framework also exposes its own limits: net gain needs cell-count information, arm comparisons can depend on calibration invariance, a narrow target-specific bound can coexist with broad component uncertainty, and unsupported signatures yield vacuous bounds. The appropriate next step is not a more elaborate retrospective conversion factor. It is prospective calibration and validation in the biological regime where the framework is intended to be used.
+
+\section*{Reproducibility}
+The accompanying package contains the LP implementation, descendant-denominator constraints, shared- and arm-specific contrast calculations, simultaneous summary-difference calculation, underdetermined structural examples, cluster simulations, signature-invariance stress test, source-verification note, public-calibration audit, prospective research plan, environment file, and mathematical/software tests. The complete reproducibility package is available at \url{https://github.com/SyedUmerHannan/CardioReg-Bounds}. No publisher figure or source workbook is redistributed.
+
+\begin{thebibliography}{99}
+\bibitem{Leone2015} Leone M, Magadum A, Engel FB. Cardiomyocyte proliferation in cardiac development and regeneration: a guide to methodologies and interpretations. \textit{Am J Physiol Heart Circ Physiol}. 2015;309:H1237--H1250. doi:10.1152/ajpheart.00559.2015.
+\bibitem{Auchampach2022} Auchampach JA, Han L, Huang GN, K\"uhn B, Lough JW, O'Meara CC, Payumo AY, Rosenthal NA, Sucov HM, Yutzey KE, Patterson M. Measuring cardiomyocyte cell-cycle activity and proliferation in the age of heart regeneration. \textit{Am J Physiol Heart Circ Physiol}. 2022;322:H579--H596. doi:10.1152/ajpheart.00666.2021.
+\bibitem{Gan2020} Gan P, Patterson M, Sucov HM. Cardiomyocyte polyploidy and implications for heart regeneration. \textit{Annu Rev Physiol}. 2020;82:45--61. doi:10.1146/annurev-physiol-021119-034618.
+\bibitem{Kirillova2021} Kirillova A, Han L, Liu H, K\"uhn B. Polyploid cardiomyocytes: implications for heart regeneration. \textit{Development}. 2021;148(14):dev199401. doi:10.1242/dev.199401.
+\bibitem{Leone2018} Leone M, Musa G, Engel FB. Cardiomyocyte binucleation is associated with aberrant mitotic microtubule distribution, mislocalization of RhoA and IQGAP3, as well as defective actomyosin ring anchorage and cleavage furrow ingression. \textit{Cardiovasc Res}. 2018;114(8):1115--1131. doi:10.1093/cvr/cvy056.
+\bibitem{Manski2003} Manski CF. \textit{Partial Identification of Probability Distributions}. Springer; 2003.
+\bibitem{ImbensManski2004} Imbens GW, Manski CF. Confidence intervals for partially identified parameters. \textit{Econometrica}. 2004;72:1845--1857. doi:10.1111/j.1468-0262.2004.00555.x.
+\bibitem{Collins2014} Collins J, Huynh M. Estimation of diagnostic test accuracy without full verification: a review of latent class methods. \textit{Stat Med}. 2014;33:4141--4169. doi:10.1002/sim.6218.
+\bibitem{Little1961} Little JDC. A proof for the queuing formula: $L=\lambda W$. \textit{Operations Research}. 1961;9:383--387. doi:10.1287/opre.9.3.383.
+\bibitem{Vardi1982} Vardi Y. Nonparametric estimation in the presence of length bias. \textit{Ann Stat}. 1982;10:616--620. doi:10.1214/aos/1176345802.
+\bibitem{Bergmann2009} Bergmann O, Bhardwaj RD, Bernard S, et al. Evidence for cardiomyocyte renewal in humans. \textit{Science}. 2009;324:98--102. doi:10.1126/science.1164680.
+\bibitem{Senyo2013} Senyo SE, Steinhauser ML, Pizzimenti CL, et al. Mammalian heart renewal by pre-existing cardiomyocytes. \textit{Nature}. 2013;493:433--436. doi:10.1038/nature11682.
+\end{thebibliography}
+\end{document}
